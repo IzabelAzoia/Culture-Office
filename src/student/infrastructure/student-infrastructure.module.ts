@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { InFileStudentPersistenceModule } from './persistence/in-file/in-file-persistence.module';
-import { InMemoryPersistenceModule } from './persistence/in-memory/in-memory-persistence.module';
+import { InFileStudentPersistenceModule } from './persistence/in-file/in-file-student-persistence.module';
+import { InMemoryPersistenceModule } from './persistence/in-memory/in-memory-student-persistence.module';
 
 @Module({})
 export class StudentInfrastructureModule {

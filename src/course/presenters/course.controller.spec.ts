@@ -1,6 +1,6 @@
-import { MockStudentRepository } from '../student/application/ports/mock-student-repository';
-import { MockCourseRepository } from '../course/mock-course.repository';
-import { EnrollmentController } from '../course/enroll-ment.controller';
+import { MockStudentRepository } from '../../student/application/ports/mock-student-repository';
+import { MockCourseRepository } from '../application/ports/mock-course.repository';
+import { EnrollmentController } from '../enroll-ment.controller';
 
 const studentRepository = new MockStudentRepository();
 const courseRepository = new MockCourseRepository();

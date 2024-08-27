@@ -1,4 +1,4 @@
-export class InLifeStudentEntity {
+export class InFileStudentEntity {
   id: string;
   name: string;
   address: string;

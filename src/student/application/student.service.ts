@@ -14,9 +14,9 @@ export class StudentService {
     private readonly studentFactory: StudentFactory,
   ) {}
 
-  register(createStudentCommand: CreateStudentCommand) {
-    this.validateMinimumAge(createStudentCommand);
-    this.validateIfAlreadyExists(createStudentCommand);
+  async register(createStudentCommand: CreateStudentCommand) {
+    await this.validateMinimumAge(createStudentCommand);
+    await this.validateIfAlreadyExists(createStudentCommand);
 
     const newStudent = this.studentFactory.create(
       createStudentCommand.name,
@@ -25,11 +25,13 @@ export class StudentService {
       createStudentCommand.phone,
     );
 
-    return this.studentRepository.save(newStudent);
+    return await this.studentRepository.save(newStudent);
   }
 
-  private validateIfAlreadyExists(createStudentCommand: CreateStudentCommand) {
-    const existingStudent = this.studentRepository.findByEmail(
+  private async validateIfAlreadyExists(
+    createStudentCommand: CreateStudentCommand,
+  ): Promise<void> {
+    const existingStudent = await this.studentRepository.findByEmail(
       createStudentCommand.email,
     );
     if (existingStudent) {

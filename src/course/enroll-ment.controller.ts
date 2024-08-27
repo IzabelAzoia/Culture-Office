@@ -1,5 +1,5 @@
 import { MockStudentRepository } from '../student/application/ports/mock-student-repository';
-import { MockCourseRepository } from './mock-course.repository';
+import { MockCourseRepository } from './application/ports/mock-course.repository';
 
 export class EnrollmentController {
   private studentRepository = new MockStudentRepository();

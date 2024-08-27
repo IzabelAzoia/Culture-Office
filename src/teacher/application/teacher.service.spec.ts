@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { TeacherRepository } from './teacher.repository';
-import { Teacher } from './entities/teacher.entity';
+import { Teacher } from '../entities/teacher.entity';
 import { TeacherService } from './teacher.service';
-import { CreateTeacherDto } from './dto/create-teacher.dto';
+import { CreateTeacherDto } from '../presenters/dto/create-teacher.dto';
 import { BadRequestException } from '@nestjs/common';
 
 describe('TeacherService', () => {

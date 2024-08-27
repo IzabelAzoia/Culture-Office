@@ -11,4 +11,4 @@ import { InMemoryStudentRepository } from './repositories/in-memory-student.repo
   ],
   exports: [InMemoryStudentRepository],
 })
-export class InMemoryPersistenceModule {}
+export class InMemoryStudentPersistenceModule {}

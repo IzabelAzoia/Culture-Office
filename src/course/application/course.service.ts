@@ -1,7 +1,7 @@
-import { Course } from './entities/course.entity';
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { CreateCourseDto } from './dto/create-course.dto';
-import { CourseRepository } from './course.repository';
+import { CreateCourseDto } from '../presenters/dto/create-course.dto';
+import { CourseRepository } from './ports/course.repository';
+import { Course } from '../domain/course';
 
 @Injectable()
 export class CourseService {
@@ -19,7 +19,7 @@ export class CourseService {
     if (
       createCourseDto.startDate &&
       createCourseDto.endDate &&
-      createCourseDto.startDate > createCourseDto.endDate
+      new Date(createCourseDto.startDate) > new Date(createCourseDto.endDate)
     ) {
       throw new BadRequestException(
         'The start date must be before the end date.',
@@ -27,10 +27,10 @@ export class CourseService {
     }
 
     const course = new Course(
+      createCourseDto.id,
       createCourseDto.name,
-      createCourseDto.startDate,
-      createCourseDto.endDate,
       createCourseDto.description,
+      createCourseDto.teachers ?? [],
     );
 
     return await this.courseRepository.save(course);

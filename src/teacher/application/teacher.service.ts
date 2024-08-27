@@ -1,9 +1,9 @@
 // src/teacher/teacher.service.ts
 
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { Teacher } from './entities/teacher.entity';
-import { TeacherRepository } from './teacher.repository';
-import { CreateTeacherDto } from './dto/create-teacher.dto';
+import { CreateTeacherDto } from '../presenters/dto/create-teacher.dto';
+import { TeacherRepository } from './ports/teacher.repository';
+import { Teacher } from '../domain/teacher';
 
 @Injectable()
 export class TeacherService {
@@ -25,6 +25,7 @@ export class TeacherService {
       createTeacherDto.phone,
       createTeacherDto.email,
       createTeacherDto.subject,
+      createTeacherDto.courses || [],
     );
 
     return await this.teacherRepository.save(teacher);

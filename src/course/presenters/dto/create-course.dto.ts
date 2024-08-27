@@ -46,4 +46,12 @@ export class CreateCourseDto {
   @IsOptional()
   @IsPositive()
   price?: number;
+
+  @IsOptional()
+  @IsString()
+  id?: string;
+
+  @IsOptional()
+  @IsString({ each: true })
+  teachers?: string[];
 }

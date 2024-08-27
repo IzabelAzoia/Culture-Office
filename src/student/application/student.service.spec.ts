@@ -1,15 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { StudentService } from './student.service';
 import { StudentFactory } from '../domain/factories/student-factory';
-import { CreateStudentCommand } from './commands/create-student-commands';
 import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { Student } from '../domain/student';
 import { StudentRepository } from './ports/student.repository';
+import { CreateStudentCommand } from './commands/create-student-commands';
 
-class MockStudentRepository {
-  private students = [];
+class MockStudentRepository implements StudentRepository {
+  private students: Student[] = [];
 
-  async save(student: any) {
+  async list(): Promise<Student[]> {
+    return this.students;
+  }
+
+  async findByEmail(email: string): Promise<Student | null> {
+    return this.students.find((student) => student.email === email) || null;
+  }
+
+  async save(student: Student): Promise<Student> {
     const existingStudent = this.students.find(
       (s) => s.email === student.email,
     );
@@ -22,20 +30,21 @@ class MockStudentRepository {
 }
 
 class MockStudentFactory {
-  create(createStudentCommand: any) {
-    return { ...createStudentCommand, id: 'generated-id' };
+  create(name: string, address: string, email: string, phone: string) {
+    return new Student('generated-id', name, email, phone, []);
   }
 }
 
 describe('StudentService', () => {
   let service: StudentService;
 
-  const testStudent = {
+  const testStudent: CreateStudentCommand = {
     name: 'John',
     address: 'Street 1',
     email: 'example@example.com',
-    birthYear: 2000,
-  } as CreateStudentCommand;
+    phone: '555-555-5555',
+    birthYear: new Date().getFullYear() - 20,
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -56,20 +65,20 @@ describe('StudentService', () => {
   it('should return a created student for the controller', async () => {
     const createdStudent = await service.register(testStudent);
     expect(createdStudent).toBeInstanceOf(Student);
-    expect(createdStudent.id).toBeDefined();
+    expect(createdStudent.id).toBe('generated-id');
     expect(createdStudent.name).toBe(testStudent.name);
     expect(createdStudent.email).toBe(testStudent.email);
     expect(createdStudent.phone).toBe(testStudent.phone);
     expect(createdStudent.courses).toStrictEqual([]);
   });
 
-  it('should throw a ForbiddenException when the person is under 16 years old', () => {
-    const under16TestStudent = {
+  it('should throw a ForbiddenException when the person is under 16 years old', async () => {
+    const under16TestStudent: CreateStudentCommand = {
       ...testStudent,
-      birthYear: new Date().getFullYear() - 16,
-    } as CreateStudentCommand;
+      birthYear: new Date().getFullYear() - 15,
+    };
 
-    expect(() => service.register(under16TestStudent)).rejects.toThrow(
+    await expect(service.register(under16TestStudent)).rejects.toThrow(
       ForbiddenException,
     );
   });

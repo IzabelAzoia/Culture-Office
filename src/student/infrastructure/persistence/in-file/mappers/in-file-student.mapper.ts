@@ -1,8 +1,8 @@
 import { Student } from '../../../../domain/student';
-import { InLifeStudentEntity } from '../entities/in-life-student.entity';
+import { InFileStudentEntity } from '../entities/in-file-student.entity';
 
 export class InFileStudentMapper {
-  static toDomain(studentEntity: InLifeStudentEntity): Student {
+  static toDomain(studentEntity: InFileStudentEntity): Student {
     const model = new Student(
       studentEntity.id,
       studentEntity.name,
@@ -14,7 +14,7 @@ export class InFileStudentMapper {
   }
 
   static toPersistence(student: Student) {
-    const entity = new InLifeStudentEntity();
+    const entity = new InFileStudentEntity();
     entity.id = student.id;
     entity.name = student.name;
     entity.email = student.email;

@@ -1,31 +1,24 @@
-import { Course } from './entities/course.entity';
+import { Course } from '../domain/course';
 import { Test, TestingModule } from '@nestjs/testing';
 import { CourseService } from './course.service';
-import { CourseRepository } from './course.repository';
-import { CreateCourseDto } from './dto/create-course.dto';
+import { CreateCourseDto } from '../presenters/dto/create-course.dto';
 import { BadRequestException } from '@nestjs/common';
-
-const courseRepositoryMock = {
-  findOne: jest.fn(),
-  save: jest.fn().mockImplementation((course: Course) => {
-    return { ...course, id: '1' };
-  }),
-};
+import { MockCourseRepository } from './ports/mock-course.repository';
 
 describe('CourseService', () => {
   let service: CourseService;
-  let repository: CourseRepository;
+  let repository: MockCourseRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CourseService,
-        { provide: CourseRepository, useValue: courseRepositoryMock },
+        { provide: MockCourseRepository, useClass: MockCourseRepository },
       ],
     }).compile();
 
     service = module.get<CourseService>(CourseService);
-    repository = module.get<CourseRepository>(CourseRepository);
+    repository = module.get<MockCourseRepository>(MockCourseRepository);
   });
 
   it('should be defined', () => {
@@ -45,10 +38,10 @@ describe('CourseService', () => {
       };
 
       const course = new Course(
+        '1',
         createCourseDto.name,
-        createCourseDto.startDate,
-        createCourseDto.endDate,
         createCourseDto.description,
+        [createCourseDto.instructorId],
       );
 
       repository.findOne = jest.fn().mockResolvedValue(null);
@@ -77,16 +70,18 @@ describe('CourseService', () => {
         type: 'Online',
       };
 
-      repository.findOne = jest
-        .fn()
-        .mockResolvedValue(
-          new Course(
-            createCourseDto.name,
-            createCourseDto.startDate,
-            createCourseDto.endDate,
-            createCourseDto.description,
-          ),
-        );
+      const existingCourse = new Course(
+        '1',
+        createCourseDto.name,
+        createCourseDto.description,
+        [createCourseDto.instructorId],
+      );
+
+      repository.findOne = jest.fn().mockResolvedValue(existingCourse);
+
+      await expect(service.createCourse(createCourseDto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('should throw BadRequestException if startDate is after endDate', async () => {
