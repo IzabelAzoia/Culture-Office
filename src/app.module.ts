@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { CoreStudentModule } from './student/core/core-student.module';
-import { StudentInfrastructureModule } from './student/infrastructure/student-infrastructure.module';
-import { ApplicationStudentBootstrapOptions } from './student/common/application-student-bootstrap-options.interface';
+import { CoreStudentModule } from './core/core-student.module';
+import { StudentInfrastructureModule } from './infraestructure/student-infrastructure.module';
+import { ApplicationStudentBootstrapOptions } from './common/application-student-bootstrap-options.interface';
 import { StudentModule } from './student/application/student.module';
 
 @Module({
